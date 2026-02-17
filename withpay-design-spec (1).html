@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>투병기록 후원 앱 — 디자인 명세서</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --warm-white: #FAF8F4;
+    --deep-rose: #C25B6B;
+    --dusty-rose: #E8B4BC;
+    --blush: #F2D5DA;
+    --moss: #5C6B4A;
+    --sage: #8FA67D;
+    --charcoal: #2C2C2C;
+    --mid-gray: #6B6B6B;
+    --light-gray: #C8C4BC;
+    --gold: #C8A96E;
+    --ink: #1A1A2E;
+    --section-gap: 80px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 60px 48px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(194,91,107,0.25) 0%, transparent 70%);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 20%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(143,166,125,0.18) 0%, transparent 70%);
+  }
+  .header-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dusty-rose);
+    margin-bottom: 18px;
+    opacity: 0.9;
+  }
+  header h1 {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+    letter-spacing: -1px;
+  }
+  header h1 span {
+    color: var(--dusty-rose);
+  }
+  .header-sub {
+    font-size: 15px;
+    color: rgba(245,240,232,0.65);
+    max-width: 560px;
+    position: relative;
+    z-index: 1;
+  }
+  .version-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgba(245,240,232,0.6);
+    position: relative;
+    z-index: 1;
+  }
+  .version-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--sage);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.5; transform:scale(1.3); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,196,188,0.5);
+    padding: 0 48px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--mid-gray);
+    padding: 16px 18px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  nav a:hover, nav a.active {
+    color: var(--deep-rose);
+    border-bottom-color: var(--deep-rose);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+
+  section {
+    padding: var(--section-gap) 0;
+    border-bottom: 1px solid rgba(200,196,188,0.4);
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--deep-rose);
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 800;
+    margin-bottom: 32px;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+
+  /* ── PROBLEM/SOLUTION CARDS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media(max-width:720px){ .two-col { grid-template-columns:1fr; } }
+
+  .card {
+    border-radius: 16px;
+    padding: 28px 30px;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.09); }
+
+  .card-problem {
+    background: #FFF5F6;
+    border: 1px solid #F5C6CB;
+  }
+  .card-solution {
+    background: #F4F8F2;
+    border: 1px solid #C8DCC0;
+  }
+  .card-neutral {
+    background: var(--warm-white);
+    border: 1px solid var(--light-gray);
+  }
+  .card-highlight {
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+  }
+  .card-icon { font-size: 26px; margin-bottom: 12px; }
+  .card h3 {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .card p, .card li { font-size: 14px; line-height: 1.7; color: inherit; opacity: 0.85; }
+  .card ul { list-style: none; }
+  .card ul li::before { content: '·  '; color: var(--deep-rose); font-weight: 700; }
+  .card-highlight p, .card-highlight li { color: var(--cream); opacity: 0.8; }
+  .card-highlight h3 { color: var(--cream); }
+  .card-highlight ul li::before { color: var(--dusty-rose); }
+
+  /* ── USER PERSONA ── */
+  .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media(max-width:720px){ .persona-grid { grid-template-columns:1fr; } }
+
+  .persona {
+    border-radius: 20px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .persona-patient {
+    background: linear-gradient(135deg, #FDF0F2 0%, #FAE4E8 100%);
+    border: 1px solid var(--dusty-rose);
+  }
+  .persona-supporter {
+    background: linear-gradient(135deg, #F2F5F0 0%, #E4EDE0 100%);
+    border: 1px solid var(--sage);
+  }
+  .persona-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+    border: 2px solid rgba(255,255,255,0.8);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .persona-patient .persona-avatar { background: var(--blush); }
+  .persona-supporter .persona-avatar { background: #D4E4CC; }
+  .persona h3 {
+    font-size: 17px; font-weight: 700; margin-bottom: 4px; color: var(--ink);
+  }
+  .persona .persona-desc {
+    font-size: 12px; color: var(--mid-gray); margin-bottom: 16px;
+    font-family: 'DM Mono', monospace; letter-spacing: 0.5px;
+  }
+  .persona-pain, .persona-need {
+    font-size: 13px; padding: 10px 14px;
+    border-radius: 10px; margin-bottom: 8px;
+  }
+  .persona-pain { background: rgba(194,91,107,0.10); color: #8B2E3C; }
+  .persona-need { background: rgba(92,107,74,0.10); color: #3B4A2C; }
+  .pain-label, .need-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 4px; display: block;
+  }
+
+  /* ── IA / NAV BAR ── */
+  .navbar-visual {
+    background: var(--ink);
+    border-radius: 24px;
+    padding: 20px 28px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 400px;
+    margin: 0 auto 36px;
+  }
+  .nav-item {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: background 0.2s;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.08); }
+  .nav-item .nav-icon { font-size: 20px; }
+  .nav-item .nav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 1px;
+    color: rgba(245,240,232,0.5);
+    text-transform: uppercase;
+  }
+  .nav-item.active .nav-label { color: var(--dusty-rose); }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 4px rgba(232,180,188,0.5)); }
+
+  /* ── SCREEN FLOWS ── */
+  .flows-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media(max-width:800px){ .flows-grid { grid-template-columns: 1fr 1fr; } }
+  @media(max-width:500px){ .flows-grid { grid-template-columns: 1fr; } }
+
+  .phone-mockup {
+    background: var(--ink);
+    border-radius: 32px;
+    padding: 16px;
+    border: 2px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .phone-mockup:hover {
+    transform: scale(1.03);
+    box-shadow: 0 28px 80px rgba(0,0,0,0.2);
+  }
+  .phone-screen {
+    background: var(--warm-white);
+    border-radius: 20px;
+    min-height: 280px;
+    padding: 18px 14px;
+    overflow: hidden;
+    position: relative;
+  }
+  .screen-status {
+    display: flex; justify-content: space-between;
+    font-size: 9px; color: var(--mid-gray);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 14px;
+  }
+  .screen-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--ink); margin-bottom: 10px;
+  }
+  .screen-label {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    margin-top: 14px;
+  }
+
+  /* Feed items */
+  .feed-item {
+    background: #fff;
+    border-radius: 12px; padding: 10px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(200,196,188,0.3);
+  }
+  .feed-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .feed-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--blush); display: flex;
+    align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+  .feed-name { font-size: 10px; font-weight: 700; color: var(--ink); }
+  .feed-days { font-size: 9px; color: var(--mid-gray); font-family: 'DM Mono', monospace; }
+  .feed-img {
+    width: 100%; height: 64px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--blush), var(--dusty-rose));
+    margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .feed-text { font-size: 9px; color: var(--mid-gray); margin-bottom: 8px; }
+  .sponsor-btn {
+    width: 100%;
+    background: var(--deep-rose);
+    color: #fff; border: none;
+    border-radius: 8px; padding: 7px;
+    font-size: 10px; font-weight: 700;
+    cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+    transition: background 0.2s;
+  }
+  .sponsor-btn:hover { background: #a84558; }
+
+  /* Record screen */
+  .record-form-item {
+    background: #fff; border-radius: 10px;
+    padding: 8px 10px; margin-bottom: 6px;
+    border: 1px solid rgba(200,196,188,0.4);
+    font-size: 10px; color: var(--mid-gray);
+  }
+  .record-form-item strong { display: block; font-size: 9px; color: var(--ink); margin-bottom: 2px; }
+
+  /* Payment screen */
+  .pay-amount {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 28px; font-weight: 700;
+    color: var(--deep-rose); text-align: center;
+    margin: 12px 0 16px;
+  }
+  .pay-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .pay-chip {
+    background: var(--blush); border-radius: 20px;
+    padding: 4px 10px; font-size: 10px; color: var(--deep-rose);
+    cursor: pointer; border: 1px solid var(--dusty-rose);
+    transition: background 0.15s;
+  }
+  .pay-chip:hover, .pay-chip.selected { background: var(--deep-rose); color: #fff; border-color: var(--deep-rose); }
+  .pay-confirm {
+    width: 100%; background: var(--ink); color: var(--cream);
+    border: none; border-radius: 10px; padding: 9px;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  /* Letter screen */
+  .letter-card {
+    background: linear-gradient(135deg, #FDF8F0, #FAF0F2);
+    border-radius: 12px; padding: 12px;
+    border: 1px solid var(--dusty-rose);
+    margin-bottom: 8px;
+  }
+  .letter-from { font-size: 9px; color: var(--mid-gray); margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+  .letter-body { font-size: 10px; color: var(--charcoal); line-height: 1.5; }
+
+  /* Today/ranking screen */
+  .rank-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 0; border-bottom: 1px solid rgba(200,196,188,0.3);
+  }
+  .rank-num {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--gold); font-weight: 700; width: 16px;
+  }
+  .rank-name { font-size: 11px; flex: 1; color: var(--ink); }
+  .rank-amt { font-size: 10px; color: var(--deep-rose); font-family: 'DM Mono', monospace; }
+
+  /* ── CORE LOGIC DIAGRAM ── */
+  .flow-diagram {
+    display: flex; align-items: center;
+    flex-wrap: wrap; gap: 8px;
+    padding: 28px;
+    background: var(--warm-white);
+    border-radius: 20px;
+    border: 1px solid var(--light-gray);
+  }
+  .flow-step {
+    flex: 1; min-width: 120px;
+    background: #fff;
+    border-radius: 14px; padding: 16px 14px;
+    text-align: center;
+    border: 1px solid rgba(200,196,188,0.5);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: transform 0.2s;
+    cursor: default;
+  }
+  .flow-step:hover { transform: translateY(-2px); }
+  .flow-step .step-icon { font-size: 22px; margin-bottom: 6px; }
+  .flow-step .step-actor {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--mid-gray); margin-bottom: 4px;
+  }
+  .flow-step .step-name { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .flow-step .step-desc { font-size: 11px; color: var(--mid-gray); line-height: 1.5; }
+  .flow-step.patient-step { border-color: var(--dusty-rose); }
+  .flow-step.patient-step .step-actor { color: var(--deep-rose); }
+  .flow-step.supporter-step { border-color: var(--sage); }
+  .flow-step.supporter-step .step-actor { color: var(--moss); }
+  .flow-arrow {
+    font-size: 18px; color: var(--light-gray);
+    flex-shrink: 0;
+    display: flex; align-items: center;
+  }
+
+  /* ── CHECKLIST ── */
+  .checklist { display: flex; flex-direction: column; gap: 10px; }
+  .check-group { background: var(--warm-white); border-radius: 16px; overflow: hidden; border: 1px solid var(--light-gray); }
+  .check-group-header {
+    padding: 14px 20px;
+    background: var(--ink);
+    color: var(--cream);
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+  }
+  .check-group-header .group-icon { font-size: 16px; }
+  .check-group-header .progress-text {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: rgba(245,240,232,0.6);
+  }
+  .check-items { padding: 8px 20px 12px; display: none; }
+  .check-items.open { display: block; }
+  .check-item {
+    display: flex; align-items: flex-start;
+    gap: 10px; padding: 10px 0;
+    border-bottom: 1px solid rgba(200,196,188,0.3);
+    cursor: pointer;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-box {
+    width: 18px; height: 18px;
+    border-radius: 5px; border: 2px solid var(--light-gray);
+    flex-shrink: 0; margin-top: 1px;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: transparent;
+  }
+  .check-item.done .check-box {
+    background: var(--moss); border-color: var(--moss); color: #fff;
+  }
+  .check-item.done .check-text { text-decoration: line-through; color: var(--light-gray); }
+  .check-text { font-size: 13px; color: var(--charcoal); }
+  .check-priority {
+    margin-left: auto; flex-shrink: 0;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .p-high { background: #FEE2E2; color: #C0392B; }
+  .p-mid  { background: #FFF8DC; color: #B8860B; }
+  .p-low  { background: #E8F5E9; color: #2E7D32; }
+
+  /* ── COLOR TOKENS ── */
+  .color-tokens { display: flex; flex-wrap: wrap; gap: 16px; }
+  .color-chip {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+  }
+  .chip-swatch {
+    width: 64px; height: 64px; border-radius: 16px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+  .chip-swatch:hover { transform: scale(1.08); }
+  .chip-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--mid-gray); text-align: center; }
+  .chip-hex { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--light-gray); }
+
+  /* ── TYPOGRAPHY ── */
+  .type-row {
+    padding: 18px 0; border-bottom: 1px solid rgba(200,196,188,0.3);
+    display: flex; align-items: baseline; gap: 24px;
+  }
+  .type-meta { min-width: 100px; }
+  .type-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--mid-gray); }
+  .type-size { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--charcoal); }
+
+  /* ── SPEC TABLE ── */
+  .spec-table { width: 100%; border-collapse: collapse; }
+  .spec-table th {
+    text-align: left; padding: 10px 16px;
+    background: var(--ink); color: var(--cream);
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .spec-table th:first-child { border-radius: 10px 0 0 0; }
+  .spec-table th:last-child { border-radius: 0 10px 0 0; }
+  .spec-table td {
+    padding: 11px 16px; font-size: 13px;
+    border-bottom: 1px solid rgba(200,196,188,0.3);
+    vertical-align: top;
+  }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .spec-table tr:nth-child(even) td { background: rgba(245,240,232,0.4); }
+  .tag {
+    display: inline-block; border-radius: 20px;
+    padding: 2px 8px; font-size: 11px;
+    font-family: 'DM Mono', monospace;
+  }
+  .tag-pink { background: var(--blush); color: var(--deep-rose); }
+  .tag-green { background: #E4EDDC; color: var(--moss); }
+  .tag-gold { background: #FFF3DC; color: #8B6914; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); color: var(--cream);
+    text-align: center; padding: 40px 48px;
+    margin-top: 0;
+  }
+  footer p { font-size: 13px; opacity: 0.45; font-family: 'DM Mono', monospace; }
+
+  /* ── ACCORDION ── */
+  .accordion { border-radius: 14px; overflow: hidden; border: 1px solid var(--light-gray); margin-bottom: 14px; }
+  .accordion-header {
+    background: var(--warm-white); padding: 16px 22px;
+    cursor: pointer; display: flex; justify-content: space-between;
+    align-items: center; transition: background 0.2s;
+    font-size: 14px; font-weight: 600; color: var(--ink);
+  }
+  .accordion-header:hover { background: var(--blush); }
+  .accordion-arrow { transition: transform 0.3s; font-size: 12px; color: var(--mid-gray); }
+  .accordion-header.open .accordion-arrow { transform: rotate(90deg); }
+  .accordion-body { padding: 0 22px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; }
+  .accordion-body.open { max-height: 1000px; padding: 16px 22px; }
+
+  /* ── SCROLL ANIMATION ── */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--ink); color: var(--cream);
+    padding: 12px 24px; border-radius: 100px;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.35s;
+    pointer-events: none; opacity: 0; z-index: 999;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  @media(max-width:600px){
+    header { padding: 40px 24px 36px; }
+    nav { padding: 0 16px; }
+    main { padding: 0 24px; }
+    .flows-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-tag">Design Specification · V1.0</div>
+  <h1>투병 기록 <span>후원 플랫폼</span></h1>
+  <p class="header-sub">인스타그램 투병 기록자와 후원자를 직접 연결하는 모바일 앱 — 개인정보 노출 없이, 빠르고 따뜻하게.</p>
+  <div class="version-badge">
+    <span class="dot"></span>
+    Mobile App · iOS / Android · v1.0 Draft
+  </div>
+</header>
+
+<!-- NAV -->
+<nav id="spec-nav">
+  <a href="#overview" class="active">개요</a>
+  <a href="#users">사용자</a>
+  <a href="#ia">구조</a>
+  <a href="#screens">화면</a>
+  <a href="#logic">핵심 로직</a>
+  <a href="#design">디자인 시스템</a>
+  <a href="#checklist">체크리스트</a>
+</nav>
+
+<main>
+
+<!-- 1. OVERVIEW -->
+<section id="overview" class="fade-in">
+  <div class="section-label">01 · Overview</div>
+  <h2 class="section-title">제품 개요 및 문제 정의</h2>
+
+  <div class="two-col" style="margin-bottom:20px;">
+    <div class="card card-problem">
+      <div class="card-icon">😣</div>
+      <h3>문제 상황</h3>
+      <ul>
+        <li>후원자는 SNS 투병 기록자에게 후원하고 싶지만 방법을 모름</li>
+        <li>계좌 공개 요청이 어색하고 환자도 개인정보 노출이 부담</li>
+        <li>기부 단체는 신뢰도 부족으로 직접 후원 선호</li>
+        <li>댓글 60%가 직접 후원 방법 탐색 중</li>
+      </ul>
+    </div>
+    <div class="card card-solution">
+      <div class="card-icon">💡</div>
+      <h3>해결책</h3>
+      <ul>
+        <li>게시물에서 바로 후원 버튼 → 즉시 직접 송금</li>
+        <li>With Pay: 최초 1회 연동으로 계좌 비노출 결제</li>
+        <li>물품 후원: 병실 주소로 택배 직접 발송</li>
+        <li>감사편지: 후원자에게 공개 감사 메시지</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card card-neutral">
+      <div class="card-icon">🎯</div>
+      <h3>핵심 가치 제안</h3>
+      <p>환자와 후원자 모두 <strong>개인정보 노출 없이</strong> 투명하고 직접적인 후원 관계를 맺을 수 있는 플랫폼</p>
+    </div>
+    <div class="card card-highlight">
+      <div class="card-icon">📊</div>
+      <h3>검증 데이터</h3>
+      <ul>
+        <li>댓글 60% — 직접 후원 원하나 방법 부재</li>
+        <li>타깃: 30~40대, 실제 소득 보유층</li>
+        <li>최근 2년 내 기부 경험자 집중</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 2. USERS -->
+<section id="users" class="fade-in">
+  <div class="section-label">02 · Users</div>
+  <h2 class="section-title">사용자 페르소나</h2>
+
+  <div class="persona-grid">
+    <div class="persona persona-patient">
+      <div class="persona-avatar">🤒</div>
+      <h3>환자 (투병 기록자)</h3>
+      <div class="persona-desc">SNS에 투병 일기를 기록하는 사람</div>
+      <div class="persona-pain">
+        <span class="pain-label">🔴 Pain</span>
+        계좌번호를 낯선 사람에게 알려주기 찝찝하다. SNS DM을 일일이 확인하기 힘들다.
+      </div>
+      <div class="persona-need">
+        <span class="need-label">🟢 Need</span>
+        개인정보 노출 없이 후원을 받고, 메시지를 체계적으로 관리하고 싶다.
+      </div>
+    </div>
+    <div class="persona persona-supporter">
+      <div class="persona-avatar">🙏</div>
+      <h3>후원자</h3>
+      <div class="persona-desc">투병 기록자를 응원하고 싶은 사람 (30~40대, 소득 보유)</div>
+      <div class="persona-pain">
+        <span class="pain-label">🔴 Pain</span>
+        기부 단체는 믿음이 안 가고, 계좌를 묻기 어색하다. 어떻게 도와야 할지 모른다.
+      </div>
+      <div class="persona-need">
+        <span class="need-label">🟢 Need</span>
+        보고 바로 후원할 수 있는 간편한 버튼. 내 후원이 실제로 전달됐다는 신뢰감.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. IA -->
+<section id="ia" class="fade-in">
+  <div class="section-label">03 · Information Architecture</div>
+  <h2 class="section-title">앱 구조 & 하단 내비게이션</h2>
+
+  <div class="navbar-visual">
+    <div class="nav-item active" onclick="highlightNav(this)">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">홈</span>
+    </div>
+    <div class="nav-item" onclick="highlightNav(this)">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">투병기록</span>
+    </div>
+    <div class="nav-item" onclick="highlightNav(this)">
+      <span class="nav-icon">✏️</span>
+      <span class="nav-label">작성</span>
+    </div>
+    <div class="nav-item" onclick="highlightNav(this)">
+      <span class="nav-icon">🏆</span>
+      <span class="nav-label">투데이</span>
+    </div>
+    <div class="nav-item" onclick="highlightNav(this)">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">마이</span>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+    <div class="card card-neutral" style="padding:16px 14px;">
+      <div style="font-size:22px; margin-bottom:8px;">🏠</div>
+      <div style="font-weight:700; font-size:12px; margin-bottom:6px; color:var(--ink);">홈 (피드)</div>
+      <div style="font-size:11px; color:var(--mid-gray);">전체 투병 기록 피드. 후원 버튼 바로 노출.</div>
+    </div>
+    <div class="card card-neutral" style="padding:16px 14px;">
+      <div style="font-size:22px; margin-bottom:8px;">📋</div>
+      <div style="font-weight:700; font-size:12px; margin-bottom:6px; color:var(--ink);">투병기록</div>
+      <div style="font-size:11px; color:var(--mid-gray);">내 기록 목록. 병원비 내역, 사진/숏폼.</div>
+    </div>
+    <div class="card card-problem" style="padding:16px 14px;">
+      <div style="font-size:22px; margin-bottom:8px;">✏️</div>
+      <div style="font-weight:700; font-size:12px; margin-bottom:6px; color:var(--ink);">작성 (환자)</div>
+      <div style="font-size:11px; color:var(--mid-gray);">투병 기록 or 감사편지 작성. 공개/비공개 선택.</div>
+    </div>
+    <div class="card card-solution" style="padding:16px 14px;">
+      <div style="font-size:22px; margin-bottom:8px;">🏆</div>
+      <div style="font-weight:700; font-size:12px; margin-bottom:6px; color:var(--ink);">투데이</div>
+      <div style="font-size:11px; color:var(--mid-gray);">오늘의 후원 순위 + 감사편지 모아보기.</div>
+    </div>
+    <div class="card card-neutral" style="padding:16px 14px;">
+      <div style="font-size:22px; margin-bottom:8px;">👤</div>
+      <div style="font-weight:700; font-size:12px; margin-bottom:6px; color:var(--ink);">마이</div>
+      <div style="font-size:11px; color:var(--mid-gray);">With Pay 연동, 후원 내역, 프로필 설정.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. SCREENS -->
+<section id="screens" class="fade-in">
+  <div class="section-label">04 · Screen Design</div>
+  <h2 class="section-title">주요 화면 목업</h2>
+
+  <div class="flows-grid">
+
+    <!-- 홈 피드 -->
+    <div>
+      <div class="phone-mockup" onclick="showToast('홈 피드: 투병 기록 피드에서 바로 후원 버튼을 누를 수 있어요')">
+        <div class="phone-screen">
+          <div class="screen-status"><span>9:41</span><span>◾◾◾ 🔋</span></div>
+          <div class="screen-title">✨ 피드</div>
+          <div class="feed-item">
+            <div class="feed-header">
+              <div class="feed-avatar">💪</div>
+              <div>
+                <div class="feed-name">항암중인 지혜</div>
+                <div class="feed-days">항암 D+42</div>
+              </div>
+            </div>
+            <div class="feed-img">🏥</div>
+            <div class="feed-text">오늘도 항암 3차 주사 맞았어요. 많이 힘들었지만...</div>
+            <button class="sponsor-btn">💝 후원하기</button>
+          </div>
+          <div class="feed-item" style="opacity:0.6;">
+            <div class="feed-header">
+              <div class="feed-avatar" style="background:#D4E4CC;">🌸</div>
+              <div>
+                <div class="feed-name">뇌종양 이겨낼래</div>
+                <div class="feed-days">수술 D+7</div>
+              </div>
+            </div>
+            <div class="feed-text" style="font-size:9px; margin-bottom:8px;">퇴원 후 첫 재활 시작했습니다...</div>
+            <button class="sponsor-btn" style="background: var(--moss);">💝 후원하기</button>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">홈 · 피드</div>
+    </div>
+
+    <!-- 투병 기록 작성 -->
+    <div>
+      <div class="phone-mockup" onclick="showToast('투병 기록 작성: 병원비 내역, 사진/숏폼을 기록해요')">
+        <div class="phone-screen">
+          <div class="screen-status"><span>9:41</span><span>◾◾◾ 🔋</span></div>
+          <div class="screen-title">📋 투병 기록 작성</div>
+          <div class="record-form-item">
+            <strong>기록 유형</strong>
+            병원비 청구 내역
+          </div>
+          <div class="record-form-item">
+            <strong>날짜</strong>
+            2025년 3월 15일
+          </div>
+          <div class="record-form-item" style="background: #FFF5F6; border-color: #F5C6CB;">
+            <strong>금액</strong>
+            1,850,000원
+          </div>
+          <div class="record-form-item">
+            <strong>사진/동영상</strong>
+            📷 추가하기
+          </div>
+          <div class="record-form-item">
+            <strong>공개 범위</strong>
+            🌍 전체 공개  /  🔒 비공개
+          </div>
+          <button class="sponsor-btn" style="margin-top:8px; background:var(--ink);">기록 저장</button>
+        </div>
+      </div>
+      <div class="screen-label">환자 · 기록 작성</div>
+    </div>
+
+    <!-- 후원 결제 -->
+    <div>
+      <div class="phone-mockup" onclick="showToast('후원 결제: With Pay로 계좌 노출 없이 즉시 송금!')">
+        <div class="phone-screen">
+          <div class="screen-status"><span>9:41</span><span>◾◾◾ 🔋</span></div>
+          <div class="screen-title">💝 후원하기</div>
+          <div style="text-align:center; font-size:11px; color:var(--mid-gray); margin-bottom:4px;">항암중인 지혜님께</div>
+          <div class="pay-amount">₩ 30,000</div>
+          <div class="pay-chips">
+            <span class="pay-chip">1만원</span>
+            <span class="pay-chip selected">3만원</span>
+            <span class="pay-chip">5만원</span>
+            <span class="pay-chip">직접입력</span>
+          </div>
+          <div style="background:var(--blush); border-radius:8px; padding:8px; margin-bottom:10px; font-size:10px; color:var(--deep-rose);">
+            🔐 With Pay 연동 — 계좌번호 비공개로 안전 송금
+          </div>
+          <div style="font-size:10px; color:var(--mid-gray); margin-bottom:10px;">
+            💌 응원 메시지 (선택)
+            <div style="background:#fff; border-radius:6px; padding:6px 8px; margin-top:4px; border:1px solid var(--light-gray); color:var(--charcoal);">힘내세요! 응원해요 🙏</div>
+          </div>
+          <button class="pay-confirm">송금하기 →</button>
+        </div>
+      </div>
+      <div class="screen-label">후원자 · 결제</div>
+    </div>
+
+    <!-- 감사편지 작성 -->
+    <div>
+      <div class="phone-mockup" onclick="showToast('감사편지: 투병 기록이 있어야 감사편지를 쓸 수 있어요')">
+        <div class="phone-screen">
+          <div class="screen-status"><span>9:41</span><span>◾◾◾ 🔋</span></div>
+          <div class="screen-title">💌 감사편지 작성</div>
+          <div style="background: #FFF5F6; border-radius:8px; padding:8px; margin-bottom:10px; font-size:10px; color: var(--deep-rose); border: 1px solid var(--dusty-rose);">
+            ⚠️ 연계할 투병 기록을 선택하세요
+          </div>
+          <div style="background:#fff; border-radius:8px; padding:8px; border:1.5px solid var(--dusty-rose); margin-bottom:8px; font-size:10px; display:flex; gap:8px; align-items:center;">
+            ✅ <div><div style="font-weight:700;">항암 3차 기록</div><div style="color:var(--mid-gray);">2025.03.15 · 1,850,000원</div></div>
+          </div>
+          <div style="font-size:10px; color:var(--mid-gray); margin-bottom:6px;">편지 내용</div>
+          <div style="background:#FDF8F0; border-radius:8px; padding:10px; border:1px solid var(--dusty-rose); font-size:11px; color:var(--charcoal); line-height:1.6; margin-bottom:10px;">
+            후원해주신 모든 분들 덕분에 이번 항암을 버텼습니다. 정말 감사합니다 🌸
+          </div>
+          <button class="pay-confirm" style="background: var(--deep-rose);">전체 공개로 게시</button>
+        </div>
+      </div>
+      <div class="screen-label">환자 · 감사편지</div>
+    </div>
+
+    <!-- 투데이 -->
+    <div>
+      <div class="phone-mockup" onclick="showToast('투데이: 오늘의 후원 순위와 감사편지를 확인해요')">
+        <div class="phone-screen">
+          <div class="screen-status"><span>9:41</span><span>◾◾◾ 🔋</span></div>
+          <div class="screen-title">🏆 오늘의 후원</div>
+          <div class="rank-item">
+            <span class="rank-num">1</span>
+            <span class="rank-name">항암중인 지혜</span>
+            <span class="rank-amt">₩320,000</span>
+          </div>
+          <div class="rank-item">
+            <span class="rank-num">2</span>
+            <span class="rank-name">뇌종양 이겨낼래</span>
+            <span class="rank-amt">₩180,000</span>
+          </div>
+          <div class="rank-item">
+            <span class="rank-num">3</span>
+            <span class="rank-name">유방암 싸움중</span>
+            <span class="rank-amt">₩95,000</span>
+          </div>
+          <div style="margin-top:12px; font-size:11px; font-weight:700; color:var(--ink); margin-bottom:6px;">💌 최신 감사편지</div>
+          <div class="letter-card">
+            <div class="letter-from">항암중인 지혜 · 방금 전</div>
+            <div class="letter-body">후원해주신 분들 덕분에 오늘도 버텼어요. 정말 감사합니다 🌸</div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-label">투데이 · 순위/편지</div>
+    </div>
+
+    <!-- 물품 후원 -->
+    <div>
+      <div class="phone-mockup" onclick="showToast('물품 후원: 병실 주소로 직접 물품을 보낼 수 있어요')">
+        <div class="phone-screen">
+          <div class="screen-status"><span>9:41</span><span>◾◾◾ 🔋</span></div>
+          <div class="screen-title">📦 물품 후원</div>
+          <div style="font-size:10px; color:var(--mid-gray); margin-bottom:10px;">금전 후원이 아닌 물품을 직접 보낼 수 있어요</div>
+          <div class="record-form-item" style="display:flex; align-items:center; gap:8px;">
+            <span>🏥</span> <div><div style="font-size:10px; font-weight:700;">병실 주소</div><div style="font-size:9px; color:var(--mid-gray);">서울 OO병원 OO호 (익명 처리)</div></div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin: 8px 0;">
+            <div style="background:var(--blush); border-radius:8px; padding:10px; text-align:center; cursor:pointer;">
+              <div style="font-size:18px;">🍱</div>
+              <div style="font-size:10px; margin-top:4px; color:var(--deep-rose);">음식</div>
+            </div>
+            <div style="background:#E4EDDC; border-radius:8px; padding:10px; text-align:center; cursor:pointer;">
+              <div style="font-size:18px;">🌸</div>
+              <div style="font-size:10px; margin-top:4px; color:var(--moss);">꽃/응원품</div>
+            </div>
+            <div style="background:#FFF8DC; border-radius:8px; padding:10px; text-align:center; cursor:pointer;">
+              <div style="font-size:18px;">🧴</div>
+              <div style="font-size:10px; margin-top:4px; color:#8B6914;">생필품</div>
+            </div>
+            <div style="background:var(--warm-white); border-radius:8px; padding:10px; text-align:center; cursor:pointer; border:1px dashed var(--light-gray);">
+              <div style="font-size:18px;">+</div>
+              <div style="font-size:10px; margin-top:4px; color:var(--mid-gray);">직접입력</div>
+            </div>
+          </div>
+          <button class="pay-confirm" style="background: var(--moss);">물품 후원 신청</button>
+        </div>
+      </div>
+      <div class="screen-label">후원자 · 물품 후원</div>
+    </div>
+
+  </div>
+  <p style="text-align:center; margin-top:16px; font-size:12px; color:var(--mid-gray); font-family:'DM Mono',monospace;">💡 목업을 클릭하면 화면 설명을 볼 수 있어요</p>
+</section>
+
+<!-- 5. CORE LOGIC -->
+<section id="logic" class="fade-in">
+  <div class="section-label">05 · Core Logic</div>
+  <h2 class="section-title">핵심 플로우 & 로직</h2>
+
+  <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--ink);">💰 후원 플로우</h3>
+  <div class="flow-diagram" style="margin-bottom:28px;">
+    <div class="flow-step patient-step">
+      <div class="step-icon">📋</div>
+      <div class="step-actor">환자</div>
+      <div class="step-name">투병 기록 게시</div>
+      <div class="step-desc">병원비, 사진, 숏폼 공개/비공개 설정</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step supporter-step">
+      <div class="step-icon">👀</div>
+      <div class="step-actor">후원자</div>
+      <div class="step-name">피드에서 확인</div>
+      <div class="step-desc">투병 기록 열람 후 후원 결정</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step supporter-step">
+      <div class="step-icon">💝</div>
+      <div class="step-actor">후원자</div>
+      <div class="step-name">후원하기 버튼</div>
+      <div class="step-desc">With Pay 즉시 송금 (계좌 비노출)</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step patient-step">
+      <div class="step-icon">💌</div>
+      <div class="step-actor">환자</div>
+      <div class="step-name">감사편지 작성</div>
+      <div class="step-desc">해당 투병 기록과 연계, 전체 공개</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--ink);">🔗 감사편지 비즈니스 로직</h3>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:28px;">
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        📋 투병 기록 먼저 작성 필수
+        <span class="accordion-arrow">▶</span>
+      </div>
+      <div class="accordion-body">
+        감사편지 작성 버튼은 <strong>투병 기록이 없는 상태에서 비활성화</strong>됩니다. 데이터 정합성 유지를 위해 감사편지 작성 시 본인의 이전 투병 기록 데이터를 선택하는 방식으로 연계합니다.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        🌍 전체 공개형 감사편지
+        <span class="accordion-arrow">▶</span>
+      </div>
+      <div class="accordion-body">
+        특정 후원자 대상이 아닌 <strong>플랫폼 전체에 공개</strong>되는 방식으로 우선 구현. 익명성 유지를 위해 후원자는 닉네임으로만 표시됩니다.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        🔐 With Pay 익명성 보장
+        <span class="accordion-arrow">▶</span>
+      </div>
+      <div class="accordion-body">
+        최초 1회 계좌 연동 후 반복 후원 시 번거로움 최소화. 환자는 후원자의 구체적인 신원을 알 수 없으며 닉네임 형태로만 확인 가능.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        📦 물품 후원 주소 처리
+        <span class="accordion-arrow">▶</span>
+      </div>
+      <div class="accordion-body">
+        병실 주소는 플랫폼이 익명 처리 후 배송 대행. 환자의 구체적인 주소가 후원자에게 직접 노출되지 않도록 보호합니다.
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--ink);">📊 기능별 스펙</h3>
+  <div style="overflow:auto; border-radius:14px; border:1px solid var(--light-gray);">
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>기능</th>
+          <th>담당 유저</th>
+          <th>우선순위</th>
+          <th>핵심 조건</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>투병 기록 게시</strong></td>
+          <td><span class="tag tag-pink">환자</span></td>
+          <td><span class="tag" style="background:#FEE2E2;color:#C0392B;">P0 필수</span></td>
+          <td>공개/비공개 선택, 병원비+사진+숏폼</td>
+        </tr>
+        <tr>
+          <td><strong>후원하기 버튼</strong></td>
+          <td><span class="tag tag-green">후원자</span></td>
+          <td><span class="tag" style="background:#FEE2E2;color:#C0392B;">P0 필수</span></td>
+          <td>피드에서 즉시 노출, With Pay 연동</td>
+        </tr>
+        <tr>
+          <td><strong>With Pay 연동</strong></td>
+          <td><span class="tag tag-green">후원자</span> <span class="tag tag-pink">환자</span></td>
+          <td><span class="tag" style="background:#FEE2E2;color:#C0392B;">P0 필수</span></td>
+          <td>최초 1회 등록, 계좌번호 완전 비공개</td>
+        </tr>
+        <tr>
+          <td><strong>감사편지 작성</strong></td>
+          <td><span class="tag tag-pink">환자</span></td>
+          <td><span class="tag" style="background:#FEE2E2;color:#C0392B;">P0 필수</span></td>
+          <td>투병 기록 연계 필수, 전체 공개</td>
+        </tr>
+        <tr>
+          <td><strong>물품 후원</strong></td>
+          <td><span class="tag tag-green">후원자</span></td>
+          <td><span class="tag" style="background:#FFF8DC;color:#B8860B;">P1 권장</span></td>
+          <td>주소 익명 처리, 카테고리 선택</td>
+        </tr>
+        <tr>
+          <td><strong>투데이 순위</strong></td>
+          <td>전체</td>
+          <td><span class="tag" style="background:#FFF8DC;color:#B8860B;">P1 권장</span></td>
+          <td>일간 후원금 집계 리더보드</td>
+        </tr>
+        <tr>
+          <td><strong>메시지 분류</strong></td>
+          <td><span class="tag tag-pink">환자</span></td>
+          <td><span class="tag" style="background:#E8F5E9;color:#2E7D32;">P2 추후</span></td>
+          <td>SNS DM 대신 앱 내 메시지 통합 관리</td>
+        </tr>
+        <tr>
+          <td><strong>SNS 공유 (인스타 연동)</strong></td>
+          <td>전체</td>
+          <td><span class="tag" style="background:#E8F5E9;color:#2E7D32;">P2 추후</span></td>
+          <td>인스타 게시물에 후원 버튼 딥링크</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 6. DESIGN SYSTEM -->
+<section id="design" class="fade-in">
+  <div class="section-label">06 · Design System</div>
+  <h2 class="section-title">디자인 시스템</h2>
+
+  <h3 style="font-size:15px; font-weight:700; margin-bottom:20px; color:var(--ink);">🎨 컬러 토큰</h3>
+  <div class="color-tokens" style="margin-bottom:36px;">
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#C25B6B;" onclick="copyColor('#C25B6B')"></div>
+      <div class="chip-label">Deep Rose</div>
+      <div class="chip-hex">#C25B6B</div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#E8B4BC;" onclick="copyColor('#E8B4BC')"></div>
+      <div class="chip-label">Dusty Rose</div>
+      <div class="chip-hex">#E8B4BC</div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#F2D5DA;" onclick="copyColor('#F2D5DA')"></div>
+      <div class="chip-label">Blush</div>
+      <div class="chip-hex">#F2D5DA</div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#5C6B4A;" onclick="copyColor('#5C6B4A')"></div>
+      <div class="chip-label">Moss</div>
+      <div class="chip-hex">#5C6B4A</div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#8FA67D;" onclick="copyColor('#8FA67D')"></div>
+      <div class="chip-label">Sage</div>
+      <div class="chip-hex">#8FA67D</div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#1A1A2E;" onclick="copyColor('#1A1A2E')"></div>
+      <div class="chip-label">Ink</div>
+      <div class="chip-hex">#1A1A2E</div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#F5F0E8;" onclick="copyColor('#F5F0E8')"></div>
+      <div class="chip-label">Cream</div>
+      <div class="chip-hex">#F5F0E8</div>
+    </div>
+    <div class="color-chip">
+      <div class="chip-swatch" style="background:#C8A96E;" onclick="copyColor('#C8A96E')"></div>
+      <div class="chip-label">Gold</div>
+      <div class="chip-hex">#C8A96E</div>
+    </div>
+  </div>
+
+  <p style="font-size:12px; color:var(--mid-gray); font-family:'DM Mono',monospace; margin-bottom:32px;">💡 색상 스와치를 클릭하면 HEX 코드가 복사돼요</p>
+
+  <h3 style="font-size:15px; font-weight:700; margin-bottom:20px; color:var(--ink);">🔤 타이포그래피</h3>
+  <div style="border-radius:14px; border:1px solid var(--light-gray); overflow:hidden; padding:0 24px; margin-bottom:32px;">
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="type-label">Display</div>
+        <div class="type-size">32–52px / 700</div>
+      </div>
+      <div style="font-family:'Noto Sans KR',sans-serif; font-size:clamp(20px,4vw,40px); font-weight:900; color:var(--ink); letter-spacing:-1px;">투병 기록 후원</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="type-label">H1 섹션 제목</div>
+        <div class="type-size">22–28px / 700</div>
+      </div>
+      <div style="font-family:'Noto Sans KR',sans-serif; font-size:24px; font-weight:800; color:var(--ink); letter-spacing:-0.5px;">오늘의 후원 순위</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="type-label">Body 본문</div>
+        <div class="type-size">14–15px / 400</div>
+      </div>
+      <div style="font-size:15px; color:var(--charcoal); line-height:1.7;">항암 3차가 끝났습니다. 후원해주신 분들 덕분에 버텼어요.</div>
+    </div>
+    <div class="type-row" style="border-bottom:none;">
+      <div class="type-meta">
+        <div class="type-label">Mono 레이블</div>
+        <div class="type-size">10–12px / 400</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--mid-gray);">D+42 · With Pay</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--ink);">📐 컴포넌트 원칙</h3>
+  <div class="two-col">
+    <div class="card card-neutral">
+      <h3>버튼</h3>
+      <ul>
+        <li>Primary: Deep Rose (#C25B6B), radius 10px</li>
+        <li>Secondary: Ink (#1A1A2E), radius 10px</li>
+        <li>Ghost: border 1px solid Light Gray</li>
+        <li>최소 터치 영역: 44×44px</li>
+      </ul>
+    </div>
+    <div class="card card-neutral">
+      <h3>카드 & 여백</h3>
+      <ul>
+        <li>카드 radius: 12–20px</li>
+        <li>기본 여백: 16px / 24px</li>
+        <li>그림자: 0 4px 16px rgba(0,0,0,0.06)</li>
+        <li>Safe area: 하단 34px (노치 대응)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 7. CHECKLIST -->
+<section id="checklist" class="fade-in">
+  <div class="section-label">07 · Checklist</div>
+  <h2 class="section-title">개발 체크리스트</h2>
+
+  <div class="checklist">
+    <!-- MVP Core -->
+    <div class="check-group">
+      <div class="check-group-header" onclick="toggleGroup(this)">
+        <span class="group-icon">🔥</span>
+        MVP 핵심 (P0)
+        <span class="progress-text" id="p0-progress">0 / 6</span>
+      </div>
+      <div class="check-items open" id="p0-items">
+        <div class="check-item" onclick="toggleCheck(this, 'p0')">
+          <div class="check-box">✓</div>
+          <div class="check-text">투병 기록 게시 기능 (텍스트 + 사진 + 숏폼)</div>
+          <span class="check-priority p-high">P0</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p0')">
+          <div class="check-box">✓</div>
+          <div class="check-text">피드에서 '후원하기' 버튼 노출</div>
+          <span class="check-priority p-high">P0</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p0')">
+          <div class="check-box">✓</div>
+          <div class="check-text">With Pay 최초 1회 계좌 연동 (환자/후원자 각각)</div>
+          <span class="check-priority p-high">P0</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p0')">
+          <div class="check-box">✓</div>
+          <div class="check-text">계좌번호 완전 비노출 직접 송금 처리</div>
+          <span class="check-priority p-high">P0</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p0')">
+          <div class="check-box">✓</div>
+          <div class="check-text">감사편지 작성 (투병 기록 연계, 기록 없으면 비활성화)</div>
+          <span class="check-priority p-high">P0</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p0')">
+          <div class="check-box">✓</div>
+          <div class="check-text">투병 기록 공개/비공개 범위 설정</div>
+          <span class="check-priority p-high">P0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- P1 권장 -->
+    <div class="check-group">
+      <div class="check-group-header" onclick="toggleGroup(this)" style="background:#3B4A2C;">
+        <span class="group-icon">⭐</span>
+        권장 기능 (P1)
+        <span class="progress-text" id="p1-progress">0 / 5</span>
+      </div>
+      <div class="check-items" id="p1-items">
+        <div class="check-item" onclick="toggleCheck(this, 'p1')">
+          <div class="check-box">✓</div>
+          <div class="check-text">물품 후원 — 카테고리 선택 + 주소 익명 처리</div>
+          <span class="check-priority p-mid">P1</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p1')">
+          <div class="check-box">✓</div>
+          <div class="check-text">투데이 탭 — 일간 후원금 순위 리더보드</div>
+          <span class="check-priority p-mid">P1</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p1')">
+          <div class="check-box">✓</div>
+          <div class="check-text">감사편지 피드 (투데이 탭)</div>
+          <span class="check-priority p-mid">P1</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p1')">
+          <div class="check-box">✓</div>
+          <div class="check-text">응원 메시지 기능 (후원 시 선택 입력)</div>
+          <span class="check-priority p-mid">P1</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p1')">
+          <div class="check-box">✓</div>
+          <div class="check-text">후원자 닉네임 익명 처리 UI</div>
+          <span class="check-priority p-mid">P1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- P2 추후 -->
+    <div class="check-group">
+      <div class="check-group-header" onclick="toggleGroup(this)" style="background:#5A5A5A;">
+        <span class="group-icon">📌</span>
+        추후 고려 (P2)
+        <span class="progress-text" id="p2-progress">0 / 4</span>
+      </div>
+      <div class="check-items" id="p2-items">
+        <div class="check-item" onclick="toggleCheck(this, 'p2')">
+          <div class="check-box">✓</div>
+          <div class="check-text">인스타그램 게시물 딥링크 연동</div>
+          <span class="check-priority p-low">P2</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p2')">
+          <div class="check-box">✓</div>
+          <div class="check-text">앱 내 메시지 분류 및 관리 시스템</div>
+          <span class="check-priority p-low">P2</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p2')">
+          <div class="check-box">✓</div>
+          <div class="check-text">후원 영수증 / 감사 인증서 발급</div>
+          <span class="check-priority p-low">P2</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'p2')">
+          <div class="check-box">✓</div>
+          <div class="check-text">구독/정기 후원 기능</div>
+          <span class="check-priority p-low">P2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- UX 체크 -->
+    <div class="check-group">
+      <div class="check-group-header" onclick="toggleGroup(this)" style="background:#6B3040;">
+        <span class="group-icon">🎨</span>
+        UX/접근성 체크
+        <span class="progress-text" id="ux-progress">0 / 4</span>
+      </div>
+      <div class="check-items" id="ux-items">
+        <div class="check-item" onclick="toggleCheck(this, 'ux')">
+          <div class="check-box">✓</div>
+          <div class="check-text">최소 터치 영역 44×44px 확보</div>
+          <span class="check-priority p-high">필수</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'ux')">
+          <div class="check-box">✓</div>
+          <div class="check-text">Safe Area (노치/홈바) 대응</div>
+          <span class="check-priority p-high">필수</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'ux')">
+          <div class="check-box">✓</div>
+          <div class="check-text">로딩 상태 스켈레톤 UI 적용</div>
+          <span class="check-priority p-mid">권장</span>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this, 'ux')">
+          <div class="check-box">✓</div>
+          <div class="check-text">결제 완료 피드백 (haptic + 확인 화면)</div>
+          <span class="check-priority p-mid">권장</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>투병 기록 후원 앱 · Design Specification v1.0 · 2025</p>
+  <p style="margin-top:6px;">Made with ♥ — 모든 투병 기록자를 응원합니다</p>
+</footer>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+  // TOAST
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // COLOR COPY
+  function copyColor(hex) {
+    navigator.clipboard.writeText(hex).then(() => {
+      showToast(`복사됨: ${hex}`);
+    });
+  }
+
+  // NAV HIGHLIGHT
+  function highlightNav(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // ACCORDION
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    header.classList.toggle('open');
+    body.classList.toggle('open');
+  }
+
+  // CHECKLIST GROUP TOGGLE
+  function toggleGroup(header) {
+    const items = header.nextElementSibling;
+    items.classList.toggle('open');
+  }
+
+  // CHECKLIST ITEM
+  const counts = { p0:0, p1:0, p2:0, ux:0 };
+  const totals = { p0:6, p1:5, p2:4, ux:4 };
+
+  function toggleCheck(el, group) {
+    el.classList.toggle('done');
+    counts[group] = document.querySelectorAll(`#${group}-items .check-item.done`).length;
+    const prog = document.getElementById(`${group}-progress`);
+    if(prog) prog.textContent = `${counts[group]} / ${totals[group]}`;
+    if(el.classList.contains('done')) {
+      showToast('✅ 완료 처리됐어요!');
+    }
+  }
+
+  // NAV ACTIVE ON SCROLL
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
+  });
+
+  // FADE IN
+  const fadeEls = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  fadeEls.forEach(el => observer.observe(el));
+
+  // SMOOTH SCROLL
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+
+  // PAY CHIPS INTERACTIVE
+  document.querySelectorAll('.pay-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.pay-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      const amts = {'1만원':'₩ 10,000','3만원':'₩ 30,000','5만원':'₩ 50,000','직접입력':'₩ ____'};
+      const amtEl = chip.closest('.phone-screen').querySelector('.pay-amount');
+      if(amtEl && amts[chip.textContent]) amtEl.textContent = amts[chip.textContent];
+    });
+  });
+</script>
+</body>
+</html>

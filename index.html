@@ -610,8 +610,8 @@
 <!-- HEADER -->
 <header>
   <div class="header-tag">Design Specification · V1.0</div>
-  <h1>투병 기록 <span>후원 플랫폼</span></h1>
-  <p class="header-sub">인스타그램 투병 기록자와 후원자를 직접 연결하는 모바일 앱 — 개인정보 노출 없이, 빠르고 따뜻하게.</p>
+  <h1>투병 기록 후원 플랫폼 <span>위드</span></h1>
+  <p class="header-sub"> 투병 기록자와 후원자를 직접 연결하는 모바일 앱 — 개인정보 노출 없이, 빠르고 따뜻하게.</p>
   <div class="version-badge">
     <span class="dot"></span>
     Mobile App · iOS / Android · v1.0 Draft
@@ -1056,7 +1056,7 @@
         </tr>
         <tr>
           <td><strong>후원하기 버튼</strong></td>
-          <td><span class="tag tag-green">후원자</span></td>
+          <td><span class="tag tag-green">후원자</span> <span class="tag tag-pink">환자</span></td>
           <td><span class="tag" style="background:#FEE2E2;color:#C0392B;">P0 필수</span></td>
           <td>피드에서 즉시 노출, With Pay 연동</td>
         </tr>
@@ -1078,75 +1078,57 @@
           <td><span class="tag" style="background:#FFF8DC;color:#B8860B;">P1 권장</span></td>
           <td>주소 익명 처리, 카테고리 선택</td>
         </tr>
-        <tr>
-          <td><strong>투데이 순위</strong></td>
-          <td>전체</td>
-          <td><span class="tag" style="background:#FFF8DC;color:#B8860B;">P1 권장</span></td>
-          <td>일간 후원금 집계 리더보드</td>
-        </tr>
-        <tr>
-          <td><strong>메시지 분류</strong></td>
-          <td><span class="tag tag-pink">환자</span></td>
-          <td><span class="tag" style="background:#E8F5E9;color:#2E7D32;">P2 추후</span></td>
-          <td>SNS DM 대신 앱 내 메시지 통합 관리</td>
-        </tr>
-        <tr>
-          <td><strong>SNS 공유 (인스타 연동)</strong></td>
-          <td>전체</td>
-          <td><span class="tag" style="background:#E8F5E9;color:#2E7D32;">P2 추후</span></td>
-          <td>인스타 게시물에 후원 버튼 딥링크</td>
-        </tr>
       </tbody>
     </table>
   </div>
 </section>
 
 <!-- 6. DESIGN SYSTEM -->
-<section id="design" class="fade-in">
+<section id="design" class="fade-in visible">
   <div class="section-label">06 · Design System</div>
   <h2 class="section-title">디자인 시스템</h2>
 
   <h3 style="font-size:15px; font-weight:700; margin-bottom:20px; color:var(--ink);">🎨 컬러 토큰</h3>
   <div class="color-tokens" style="margin-bottom:36px;">
     <div class="color-chip">
-      <div class="chip-swatch" style="background:#C25B6B;" onclick="copyColor('#C25B6B')"></div>
-      <div class="chip-label">Deep Rose</div>
-      <div class="chip-hex">#C25B6B</div>
+      <div class="chip-swatch" style="background:#FF7B7B;" onclick="copyColor('#FF7B7B')"></div>
+      <div class="chip-label">Pink</div>
+      <div class="chip-hex">#FF7B7B</div>
     </div>
     <div class="color-chip">
-      <div class="chip-swatch" style="background:#E8B4BC;" onclick="copyColor('#E8B4BC')"></div>
-      <div class="chip-label">Dusty Rose</div>
-      <div class="chip-hex">#E8B4BC</div>
+      <div class="chip-swatch" style="background:#FFEBEB;" onclick="copyColor('#FFEBEB')"></div>
+      <div class="chip-label">Light Pink</div>
+      <div class="chip-hex">#FFEBEB</div>
     </div>
     <div class="color-chip">
-      <div class="chip-swatch" style="background:#F2D5DA;" onclick="copyColor('#F2D5DA')"></div>
-      <div class="chip-label">Blush</div>
-      <div class="chip-hex">#F2D5DA</div>
+      <div class="chip-swatch" style="background:#FFD600;" onclick="copyColor('#FFD600')"></div>
+      <div class="chip-label">Yellow</div>
+      <div class="chip-hex">#FFD600</div>
     </div>
     <div class="color-chip">
-      <div class="chip-swatch" style="background:#5C6B4A;" onclick="copyColor('#5C6B4A')"></div>
-      <div class="chip-label">Moss</div>
-      <div class="chip-hex">#5C6B4A</div>
+      <div class="chip-swatch" style="background:#FFEC88;" onclick="copyColor('#FFEC88')"></div>
+      <div class="chip-label">Light Yellow</div>
+      <div class="chip-hex">#FFEC88</div>
     </div>
     <div class="color-chip">
-      <div class="chip-swatch" style="background:#8FA67D;" onclick="copyColor('#8FA67D')"></div>
-      <div class="chip-label">Sage</div>
-      <div class="chip-hex">#8FA67D</div>
+      <div class="chip-swatch" style="background:#181658;" onclick="copyColor('#181658')"></div>
+      <div class="chip-label">Navy</div>
+      <div class="chip-hex">#181658</div>
     </div>
     <div class="color-chip">
-      <div class="chip-swatch" style="background:#1A1A2E;" onclick="copyColor('#1A1A2E')"></div>
-      <div class="chip-label">Ink</div>
-      <div class="chip-hex">#1A1A2E</div>
+      <div class="chip-swatch" style="background:#996C59;" onclick="copyColor('#996C59')"></div>
+      <div class="chip-label">Brown</div>
+      <div class="chip-hex">#996C59</div>
     </div>
     <div class="color-chip">
-      <div class="chip-swatch" style="background:#F5F0E8;" onclick="copyColor('#F5F0E8')"></div>
-      <div class="chip-label">Cream</div>
-      <div class="chip-hex">#F5F0E8</div>
+      <div class="chip-swatch" style="background:#D5F0FF;" onclick="copyColor('#D5F0FF')"></div>
+      <div class="chip-label">Light Blue</div>
+      <div class="chip-hex">#D5F0FF</div>
     </div>
     <div class="color-chip">
-      <div class="chip-swatch" style="background:#C8A96E;" onclick="copyColor('#C8A96E')"></div>
-      <div class="chip-label">Gold</div>
-      <div class="chip-hex">#C8A96E</div>
+      <div class="chip-swatch" style="background:#FFFFFF; border: 1px solid #E9ECEF;" onclick="copyColor('#FFFFFF')"></div>
+      <div class="chip-label">White</div>
+      <div class="chip-hex">#FFFFFF</div>
     </div>
   </div>
 
@@ -1183,6 +1165,31 @@
       <div style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--mid-gray);">D+42 · With Pay</div>
     </div>
   </div>
+
+  <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--ink);">📐 컴포넌트 원칙</h3>
+  <div class="two-col">
+    <div class="card card-neutral">
+      <h3>버튼</h3>
+      <ul>
+        <li>Primary: Deep Rose (#C25B6B), radius 10px</li>
+        <li>Secondary: Ink (#1A1A2E), radius 10px</li>
+        <li>Ghost: border 1px solid Light Gray</li>
+        <li>최소 터치 영역: 44×44px</li>
+      </ul>
+    </div>
+    <div class="card card-neutral">
+      <h3>카드 &amp; 여백</h3>
+      <ul>
+        <li>카드 radius: 12–20px</li>
+        <li>기본 여백: 16px / 24px</li>
+        <li>그림자: 0 4px 16px rgba(0,0,0,0.06)</li>
+        <li>Safe area: 하단 34px (노치 대응)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+ 
 
   <h3 style="font-size:15px; font-weight:700; margin-bottom:16px; color:var(--ink);">📐 컴포넌트 원칙</h3>
   <div class="two-col">
@@ -1358,7 +1365,7 @@
 
 <footer>
   <p>투병 기록 후원 앱 · Design Specification v1.0 · 2025</p>
-  <p style="margin-top:6px;">Made with ♥ — 모든 투병 기록자를 응원합니다</p>
+  <p style="margin-top:6px;">Made with  — 기능명세서</p>
 </footer>
 
 <!-- TOAST -->
